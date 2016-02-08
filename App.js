@@ -1,4 +1,4 @@
-EExt.define('CustomApp', {
+Ext.define('CustomApp', {
     extend: 'Rally.app.App',
     componentCls: 'app',
     launch: function() {
@@ -22,6 +22,7 @@ EExt.define('CustomApp', {
             items: [{
                 xtype: 'rallyportfolioitemtypecombobox',
                 fieldLabel: 'Item Type',
+                labelAlign: right,
                 listeners: {
                     change: function(x, newvalue, oldvalue, object) {
                         this.piType = x.getRecord().get('Name');
@@ -42,6 +43,7 @@ EExt.define('CustomApp', {
             items: [{
                 xtype: 'rallydatefield',
                 fieldLabel: 'Start Date',
+                labelAlign: right,
                 listeners: {
                     change: function(x, newvalue, oldvalue, object) {
                         this.startdate = newvalue;
@@ -64,7 +66,8 @@ EExt.define('CustomApp', {
         var endDateField = Ext.create('Ext.Container', {
             items: [{
                 xtype: 'rallydatefield',
-                fieldLabel: 'End Date',
+                fieldLabel: 'End Date',                
+                labelAlign: right,
                 listeners: {
                     change: function(x, newvalue, oldvalue, object) {
                         this.endDate = newvalue;
