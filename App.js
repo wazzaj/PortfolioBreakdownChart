@@ -136,7 +136,7 @@ Ext.define('CustomApp', {
                         scope: app,
                         success: function(endPoints) {
                             var totalPoints = endPoints - startPoints;
-                            app.newPointsStore.add({
+                            app.pointsStore.add({
                                 FormattedID:id, 
                                 Name:name, 
                                 Start: startPoints, 
@@ -191,10 +191,10 @@ Ext.define('CustomApp', {
     _createArrayStore: function() {
         var app = this;
 
-        if (app.newPointsStore) {
-            app.newPointsStore.removeAll();
+        if (app.pointsStore) {
+            app.pointsStore.removeAll();
         } else {
-            app.newPointsStore = new Ext.data.ArrayStore({
+            app.pointsStore = new Ext.data.ArrayStore({
                 fields: [
                     'FormattedID',
                     'Name',
@@ -211,7 +211,7 @@ Ext.define('CustomApp', {
 
         if(!app.pointsGrid) {
             app.pointsGrid = new Ext.grid.Panel({
-                store: app.newPointsStore,
+                store: app.pointsStore,
                 columns: [
                     {text: 'ID',        dataIndex: 'FormattedID'},       
                     {text: 'Name',      dataIndex: 'Name',   flex:1},
@@ -230,12 +230,12 @@ Ext.define('CustomApp', {
 
         if(!app.pieChart) {
             app.pieChart = new Ext.chart.Chart({
-                width: 600,
-                height: 600,
+                width: 400,
+                height: 400,
                 animate: true,
 //                autoSize: true,
 //                autoScroll: true,
-                store: app.newPointsStore,
+                store: app.pointsStore,
                 renderTo: Ext.getBody(),
                 shadow: true,
                 legend: {
@@ -246,13 +246,18 @@ Ext.define('CustomApp', {
                 series: [{
                     type: 'pie',
                     field: 'Points',
-                    showInLegend: true,
+//                    showInLegend: true,
                     tips: {
                         trackMouse: true,
                         width: 300,
-                        height: 28,
+                        height: 29,
+                        bodyStyle: {background: 'grey'},
                         renderer: function(storeItem, item) {
-                            app.setTitle(storeItem.get('Name') + ': ' + storeItem.get('Points'));
+                            var total = 0;
+                            app.pointsStore.each(function(rec) {
+                                total += rec.get('Points');
+                            });
+                            this.setTitle(storeItem.get('Name') + ': ' + Math.round(storeItem.get('Points') / total * 100) + '%');
                         }
                     },
                     highlight: {
@@ -261,8 +266,9 @@ Ext.define('CustomApp', {
                         }
                     },
                     label: {
-                        field: 'Name',
-                        display: 'none'
+                        field: 'Name'
+//                        display: 'rotate',
+//                        font: '8px Arial'
                     },
                     animate: true
                 }]
