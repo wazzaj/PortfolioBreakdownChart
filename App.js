@@ -17,6 +17,7 @@ Ext.define('CustomApp', {
         this._getPortfolioType();
         this._setStartDate();
         this._setEndDate();
+//        this._addChartViewButton();
     },
 
     _getPortfolioType: function() {
@@ -85,6 +86,23 @@ Ext.define('CustomApp', {
 
         app.down('#filter-Box').add(endDateField);
     },
+
+//    _addChartViewButton: function() {
+//        var app = this;
+        
+//        var chartButton = Ext.create('Ext.Container', {
+//            items: [{
+//                xtype: 'rallybutton',
+//                text: 'Click me',
+//                handler: function() {
+//                    Ext.Msg.alert('Button', 'You clicked me');
+//                }
+//            }],
+//        renderTo: Ext.getBody().dom
+//        });
+
+//        app.down('#filter-Box').add(chartButton);
+//    },
 
     _loadData: function() {
         var app = this;
@@ -230,11 +248,9 @@ Ext.define('CustomApp', {
 
         if(!app.pieChart) {
             app.pieChart = new Ext.chart.Chart({
-                width: 400,
-                height: 400,
+                width: Ext.getBody().getViewSize().width - 100,
+                height: Ext.getBody().getViewSize().height - 100,
                 animate: true,
-//                autoSize: true,
-//                autoScroll: true,
                 store: app.pointsStore,
                 renderTo: Ext.getBody(),
                 shadow: true,
@@ -251,7 +267,7 @@ Ext.define('CustomApp', {
                         trackMouse: true,
                         width: 300,
                         height: 29,
-                        bodyStyle: {background: 'grey'},
+                        bodyStyle: {background: 'white'},
                         renderer: function(storeItem, item) {
                             var total = 0;
                             app.pointsStore.each(function(rec) {
@@ -273,7 +289,17 @@ Ext.define('CustomApp', {
                     animate: true
                 }]
             });
+
+            Ext.EventManager.onWindowResize(function () {
+                var width = Ext.getBody().getViewSize().width - 160;
+                var height = Ext.getBody().getViewSize().height - 140;
+
+                console.log(width, height);
+
+                app.pieChart.setSize(width, height);
+            });
+
             app.add(app.pieChart);
-        }    
+        } 
     }    
 });
