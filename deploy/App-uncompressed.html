@@ -34,7 +34,6 @@
             listeners: {
                 select: function(combobox, records) {
                     this.piType = this.piTypeField.getRecord().get('Name');
-                	console.log("Select: ", this.piType);
                     this._loadData();
                 },
                 scope: this
@@ -55,9 +54,7 @@
                 labelAlign: 'right',
                 listeners: {
                     select: function(field, value) {
-                    	console.log("Select: Start Date");	
                         this.startDate = value;
-                   		console.log("Select: ", this.startDate);
                         this._loadData();
                     },                    
                     scope: this
@@ -81,9 +78,7 @@
                 labelAlign: 'right',
                 listeners: {
                     select: function(field, value) {
-                    	console.log("Select: End Date");	
                         this.endDate = value;
-                		console.log("Select: ", this.endDate);
                         this._loadData();
                     },                    
                     scope: this
