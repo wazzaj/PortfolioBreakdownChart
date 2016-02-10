@@ -5,7 +5,7 @@ Ext.define('CustomApp', {
     items: [
         {
         xtype: 'container',
-        itemId: 'filter-Box',
+        itemId: 'filter-Box', 
         layout: {
             type: 'hbox',
             align: 'stretch'
@@ -20,6 +20,7 @@ Ext.define('CustomApp', {
     },
 
     _getPortfolioType: function() {
+        var app = this;
 
         var piTypeField = {
             xtype: 'rallyportfolioitemtypecombobox',
@@ -28,89 +29,90 @@ Ext.define('CustomApp', {
             labelAlign: 'right',
             renderTo: Ext.getBody().dom,
             listeners: {
-                select: function(combobox, records) {
-                    this.piType = this.down('#type-Filter').getRecord().get('Name');
-                    this._loadData();
-                },
-                scope: this
-            }
-        };
+                select: app._loadData,
+                scope: app
+                }                
+            };
 
-        this.down('#filter-Box').add(piTypeField);
+        app.down('#filter-Box').add(piTypeField);
     },
 
     _setStartDate: function() {
+        var app = this; 
+
         var d = Ext.Date.add(new Date(), Ext.Date.DAY, -7);
-        this.startDate = Ext.Date.clearTime(d);
+        app.startDate = Ext.Date.clearTime(d);
 
         var startDateField = Ext.create('Ext.Container', {
             items: [{
+                itemId: 'start-Date',
                 xtype: 'rallydatefield',
                 fieldLabel: 'Start Date',
                 labelAlign: 'right',
                 listeners: {
-                    select: function(field, value) {
-                        this.startDate = value;
-                        this._loadData();
-                    },                    
-                    scope: this
-                },    
+                    select: app._loadData,
+                    scope: app
+                    },                   
                 maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
-                value: this.startDate
+                value: app.startDate
             }],
             renderTo: Ext.getBody().dom
         });
 
-        this.down('#filter-Box').add(startDateField);
+        app.down('#filter-Box').add(startDateField);
     },
 
     _setEndDate: function() {
-        this.endDate = Ext.Date.add(new Date());
+        var app = this;
+
+        app.endDate = Ext.Date.add(new Date());
 
         var endDateField = Ext.create('Ext.Container', {
             items: [{
+                itemId: 'end-Date',
                 xtype: 'rallydatefield',
                 fieldLabel: 'End Date',                
                 labelAlign: 'right',
                 listeners: {
-                    select: function(field, value) {
-                        this.endDate = value;
-                        this._loadData();
-                    },                    
-                    scope: this
+                    select: app._loadData,
+                    scope: app                    
                     },    
                 maxValue: Ext.Date.add(new Date()),
-                value: this.endDate
+                value: app.endDate
                 }],
             renderTo: Ext.getBody().dom
         });
 
-//        this.pulldownContainer.add(endDateField);
-        this.down('#filter-Box').add(endDateField);
-
+        app.down('#filter-Box').add(endDateField);
     },
 
     _loadData: function() {
+        var app = this;
+
+        app.piType = app.down('#type-Filter').getRecord().get('Name');
+        app.startDate = app.down('#start-Date').getValue();
+        app.endDate = app.down('#end-Date').getValue();
+
         var piFilter = Ext.create('Rally.data.wsapi.Filter', {
             property: 'PortfolioItemType.Name',
             operator: '=',
-            value: this.piType
+            value: app.piType
         });
 
-        if(this.itemStore) {
-            this.itemStore.setFilter(piFilter);
-            this.itemStore.load();
+        if(app.itemStore) {
+            app.itemStore.setFilter(piFilter);
+            app.itemStore.load();
         } else {
-            this.itemStore = Ext.create('Rally.data.wsapi.Store', {
+            app.itemStore = Ext.create('Rally.data.wsapi.Store', {
                 model: 'Portfolio Item',
                 autoLoad: true,
                 filters: piFilter,
                 listeners: {
                     load: function(myStore, myData, success) {
-                        this._processPortfolioItems();
-                        this._drawPieChart();
+                        app._processPortfolioItems();
+                        app._drawPieChart();
                     },
-                    scope: this    
+                    scope: app    
                 },
                 fetch: ['FormattedID','ObjectID', 'Name', 'PortfolioItemType']
             });
@@ -118,22 +120,23 @@ Ext.define('CustomApp', {
     },
 
     _processPortfolioItems: function() {
+        var app = this;
 
-        this._createArrayStore();
+        app._createArrayStore();
 
-        this.itemStore.each(function(record) {
+        app.itemStore.each(function(record) {
             var item = record.get('ObjectID');
             var id = record.get('FormattedID');
             var name = record.get('Name');
 
-            this._getPointsDifference(item,this.startDate).then({
-                scope: this,
+            app._getPointsDifference(item,app.startDate).then({
+                scope: app,
                 success: function(startPoints) {
-                    this._getPointsDifference(item,this.endDate).then({
-                        scope: this,
+                    app._getPointsDifference(item,app.endDate).then({
+                        scope: app,
                         success: function(endPoints) {
                             var totalPoints = endPoints - startPoints;
-                            this.newPointsStore.add({
+                            app.newPointsStore.add({
                                 FormattedID:id, 
                                 Name:name, 
                                 Start: startPoints, 
@@ -149,21 +152,23 @@ Ext.define('CustomApp', {
 //                    console.log("Error");
                 }    
             });            
-        },this);
+        },app);
     },
 
     _getPointsDifference: function(objid, uDate) {
+        var app = this;
+
         var deferred = Ext.create('Deft.Deferred');
 
         var uStore = Ext.create('Rally.data.lookback.SnapshotStore', {
             autoLoad: true,
             listeners: {
-                scope: this,
+                scope: app,
                 load: function(uStore, uData, success) {
                     uStore.each(function(record) {
                         var points = record.get('AcceptedLeafStoryPlanEstimateTotal'); 
                         deferred.resolve(points);
-                    },this);
+                    },app);
                 }
             },
             fetch: ['Name', 'AcceptedLeafStoryPlanEstimateTotal'],
@@ -184,11 +189,12 @@ Ext.define('CustomApp', {
     },
 
     _createArrayStore: function() {
+        var app = this;
 
-        if (this.newPointsStore) {
-            this.newPointsStore.removeAll();
+        if (app.newPointsStore) {
+            app.newPointsStore.removeAll();
         } else {
-            this.newPointsStore = new Ext.data.ArrayStore({
+            app.newPointsStore = new Ext.data.ArrayStore({
                 fields: [
                     'FormattedID',
                     'Name',
@@ -201,10 +207,11 @@ Ext.define('CustomApp', {
     },
 
     _createPointsGrid: function() {
+        var app = this;
 
-        if(!this.pointsGrid) {
-            this.pointsGrid = new Ext.grid.Panel({
-                store: this.newPointsStore,
+        if(!app.pointsGrid) {
+            app.pointsGrid = new Ext.grid.Panel({
+                store: app.newPointsStore,
                 columns: [
                     {text: 'ID',        dataIndex: 'FormattedID'},       
                     {text: 'Name',      dataIndex: 'Name',   flex:1},
@@ -212,23 +219,23 @@ Ext.define('CustomApp', {
                     {text: 'End',       dataIndex: 'End'},
                     {text: 'Points',    dataIndex: 'Points'}
                 ],
-//                title: 'Portfolio Items - Points Completed',
                 renderTo: Ext.getBody()
                 });
-            this.add(this.pointsGrid);
+            app.add(app.pointsGrid);
         }
     },
 
     _drawPieChart: function() {
+        var app = this;
 
-        if(!this.pieChart) {
-            this.pieChart = new Ext.chart.Chart({
+        if(!app.pieChart) {
+            app.pieChart = new Ext.chart.Chart({
                 width: 600,
                 height: 600,
                 animate: true,
 //                autoSize: true,
 //                autoScroll: true,
-                store: this.newPointsStore,
+                store: app.newPointsStore,
                 renderTo: Ext.getBody(),
                 shadow: true,
                 legend: {
@@ -245,7 +252,7 @@ Ext.define('CustomApp', {
                         width: 300,
                         height: 28,
                         renderer: function(storeItem, item) {
-                            this.setTitle(storeItem.get('Name') + ': ' + storeItem.get('Points'));
+                            app.setTitle(storeItem.get('Name') + ': ' + storeItem.get('Points'));
                         }
                     },
                     highlight: {
@@ -260,7 +267,7 @@ Ext.define('CustomApp', {
                     animate: true
                 }]
             });
-            this.add(this.pieChart);
+            app.add(app.pieChart);
         }    
     }    
 });
