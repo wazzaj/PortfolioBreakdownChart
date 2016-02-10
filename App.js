@@ -18,42 +18,41 @@ Ext.define('CustomApp', {
 
     _getPortfolioType: function() {
 
-        var piTypeField = Ext.create('Ext.Container', {
-            items: [{
-                xtype: 'rallyportfolioitemtypecombobox',
-                fieldLabel: 'Item Type',
-                labelAlign: right,
-                listeners: {
-                    change: function(x, newvalue, oldvalue, object) {
-                        this.piType = x.getRecord().get('Name');
-                        this._loadData();
-                        },
-                    scope: this    
-                    }
-                }],
-            renderTo: Ext.getBody().dom
+        this.piTypeField = Ext.create('Rally.ui.combobox.PortfolioItemTypeComboBox', {
+            fieldLabel: 'Item Type',
+            labelAlign: 'right',
+            renderTo: Ext.getBody().dom,
+            listeners: {
+                select: function(combobox, records) {
+                    this.piType = this.piTypeField.getRecord().get('Name');
+                    this._loadData();
+                },
+                scope: this
+            }
         });
-        this.pulldownContainer.add(piTypeField);
+
+        this.pulldownContainer.add(this.piTypeField);
     },
 
     _setStartDate: function() {
-        this.startDate = Ext.Date.add(new Date(), Ext.Date.DAY, -7);
+        var d = Ext.Date.add(new Date(), Ext.Date.DAY, -7);
+        this.startDate = Ext.Date.clearTime(d);
 
         var startDateField = Ext.create('Ext.Container', {
             items: [{
                 xtype: 'rallydatefield',
                 fieldLabel: 'Start Date',
-                labelAlign: right,
+                labelAlign: 'right',
                 listeners: {
-                    change: function(x, newvalue, oldvalue, object) {
-                        this.startdate = newvalue;
+                    select: function(field, value) {
+                        this.startDate = value;
                         this._loadData();
-                        },
+                    },                    
                     scope: this
-                    },    
+                },    
                 maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
                 value: this.startDate
-                }],
+            }],
             renderTo: Ext.getBody().dom
         });
 
@@ -67,12 +66,12 @@ Ext.define('CustomApp', {
             items: [{
                 xtype: 'rallydatefield',
                 fieldLabel: 'End Date',                
-                labelAlign: right,
+                labelAlign: 'right',
                 listeners: {
-                    change: function(x, newvalue, oldvalue, object) {
-                        this.endDate = newvalue;
+                    select: function(field, value) {
+                        this.endDate = value;
                         this._loadData();
-                        },
+                    },                    
                     scope: this
                     },    
                 maxValue: Ext.Date.add(new Date()),
@@ -220,8 +219,8 @@ Ext.define('CustomApp', {
 
         if(!this.pieChart) {
             this.pieChart = new Ext.chart.Chart({
-                width: 400,
-                height: 300,
+                width: 600,
+                height: 600,
                 animate: true,
 //                autoSize: true,
 //                autoScroll: true,
