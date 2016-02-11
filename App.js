@@ -87,23 +87,6 @@ Ext.define('CustomApp', {
         app.down('#filter-Box').add(endDateField);
     },
 
-//    _addChartViewButton: function() {
-//        var app = this;
-        
-//        var chartButton = Ext.create('Ext.Container', {
-//            items: [{
-//                xtype: 'rallybutton',
-//                text: 'Click me',
-//                handler: function() {
-//                    Ext.Msg.alert('Button', 'You clicked me');
-//                }
-//            }],
-//        renderTo: Ext.getBody().dom
-//        });
-
-//        app.down('#filter-Box').add(chartButton);
-//    },
-
     _loadData: function() {
         var app = this;
 
@@ -254,9 +237,9 @@ Ext.define('CustomApp', {
                 store: app.pointsStore,
                 renderTo: Ext.getBody(),
                 shadow: true,
-                legend: {
-                    position: 'right'
-                },
+//                legend: {
+//                    position: 'right'
+//                },
                 insetPadding: 25,
                 theme: 'Base:gradients',
                 series: [{
@@ -293,9 +276,6 @@ Ext.define('CustomApp', {
             Ext.EventManager.onWindowResize(function () {
                 var width = Ext.getBody().getViewSize().width - 160;
                 var height = Ext.getBody().getViewSize().height - 140;
-
-                console.log(width, height);
-
                 app.pieChart.setSize(width, height);
             });
 
