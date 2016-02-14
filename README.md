@@ -3,6 +3,11 @@ PortfolioPieChart
 
 ## Overview
 
+This is a Rally app to display a pie chart of the breakdown of total points completed by Portfolio Item for a given tier (e.g. Initiative, Feature) and time range.
+
+## Screenshots
+
+
 
 ## License
 
