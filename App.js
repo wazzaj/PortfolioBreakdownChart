@@ -17,7 +17,6 @@ Ext.define('CustomApp', {
         this._getPortfolioType();
         this._setStartDate();
         this._setEndDate();
-        this._addGroupButton();
     },
 
     _getPortfolioType: function() {
@@ -274,11 +273,12 @@ Ext.define('CustomApp', {
             });
 
             Ext.EventManager.onWindowResize(function () {
-                var width = Ext.getBody().getViewSize().width - 160;
-                var height = Ext.getBody().getViewSize().height - 140;
+                var width = Ext.getBody().getViewSize().width - 100;
+                var height = Ext.getBody().getViewSize().height - 100;
                 app.pieChart.setSize(width, height);
             });
 
             app.add(app.pieChart);
-        } 
+        }
+    } 
 });
