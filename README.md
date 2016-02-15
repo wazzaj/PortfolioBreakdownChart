@@ -8,14 +8,7 @@ This Rally app will display a pie chart breaking down the number of completed po
 
 ##Screenshots
 =======
-This is a Rally app to display a pie chart of the breakdown of total points completed by Portfolio Item for a given tier (e.g. Initiative, Feature) and time range.
-
-## Screenshots
-
-
->>>>>>> 5f38e61e5e17c399a81235a44d4c5db8f6c6fcaa
-
-
+![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart.png)
 
 ##Documentation for SDK
 
