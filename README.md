@@ -1,12 +1,13 @@
 PortfolioPieChart
 =========================
 
-## Overview
+##Overview
+
+This Rally app will display a pie chart breaking down the number of completed points of all Portfolio Items at a specified tier (e.g. Initiative, Feature) over a specified time range.
+
+##Screenshots
 
 
-## License
-
-AppTemplate is released under the MIT license.  See the file [LICENSE](./LICENSE) for the full text.
 
 ##Documentation for SDK
 

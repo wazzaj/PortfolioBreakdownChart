@@ -17,7 +17,7 @@ Ext.define('CustomApp', {
         this._getPortfolioType();
         this._setStartDate();
         this._setEndDate();
-//        this._addChartViewButton();
+        this._addGroupButton();
     },
 
     _getPortfolioType: function() {
@@ -281,5 +281,4 @@ Ext.define('CustomApp', {
 
             app.add(app.pieChart);
         } 
-    }    
 });
