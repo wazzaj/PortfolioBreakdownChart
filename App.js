@@ -99,24 +99,20 @@ Ext.define('CustomApp', {
             value: app.piType
         });
 
-        if(app.itemStore) {
-            app.itemStore.setFilter(piFilter);
-            app.itemStore.load();
-        } else {
-            app.itemStore = Ext.create('Rally.data.wsapi.Store', {
-                model: 'Portfolio Item',
-                autoLoad: true,
-                filters: piFilter,
-                listeners: {
-                    load: function(myStore, myData, success) {
-                        app._processPortfolioItems();
-                        app._drawPieChart();
-                    },
-                    scope: app    
+        app.itemStore = Ext.create('Rally.data.wsapi.Store', {
+            model: 'Portfolio Item',
+            autoLoad: true,
+            filters: piFilter,
+            listeners: {
+                load: function(myStore, myData, success) {
+                    app._processPortfolioItems();
+                    app._drawPieChart();
+                    app._createPointsGrid();
                 },
-                fetch: ['FormattedID','ObjectID', 'Name', 'PortfolioItemType']
-            });
-        }      
+                scope: app    
+            },
+            fetch: ['FormattedID','ObjectID', 'Name', 'PortfolioItemType']
+        });
     },
 
     _processPortfolioItems: function() {
@@ -157,7 +153,6 @@ Ext.define('CustomApp', {
 
     _getPointsDifference: function(objid, uDate) {
         var app = this;
-
         var deferred = Ext.create('Deft.Deferred');
 
         var uStore = Ext.create('Rally.data.lookback.SnapshotStore', {
@@ -165,10 +160,14 @@ Ext.define('CustomApp', {
             listeners: {
                 scope: app,
                 load: function(uStore, uData, success) {
-                    uStore.each(function(record) {
-                        var points = record.get('AcceptedLeafStoryPlanEstimateTotal'); 
-                        deferred.resolve(points);
-                    },app);
+                    if (uStore.getCount() === 0) {
+                        deferred.resolve(0);
+                    } else {
+                        uStore.each(function(record) {
+                            var points = record.get('AcceptedLeafStoryPlanEstimateTotal'); 
+                            deferred.resolve(points);
+                        }, app);
+                    }
                 }
             },
             fetch: ['Name', 'AcceptedLeafStoryPlanEstimateTotal'],
