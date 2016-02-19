@@ -211,6 +211,7 @@ Ext.define('CustomApp', {
         if(!app.pointsGrid) {
             app.pointsGrid = new Ext.grid.Panel({
                 store: app.pointsStore,
+                width: Ext.getBody().getViewSize().width,
                 columns: [
                     {text: 'ID',        dataIndex: 'FormattedID'},       
                     {text: 'Name',      dataIndex: 'Name',   flex:1},
@@ -220,6 +221,12 @@ Ext.define('CustomApp', {
                 ],
                 renderTo: Ext.getBody()
                 });
+
+            Ext.EventManager.onWindowResize(function () {
+                var width = Ext.getBody().getViewSize().width;
+                app.pointsGrid.setWidth(width);
+            });
+            
             app.add(app.pointsGrid);
         }
     },
