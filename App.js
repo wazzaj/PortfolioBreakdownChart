@@ -132,6 +132,11 @@ Ext.define('CustomApp', {
                         scope: app,
                         success: function(endPoints) {
                             var totalPoints = endPoints - startPoints;
+
+                            if (totalPoints < 0) {
+                                totalPoints = 0;
+                            }
+
                             app.pointsStore.add({
                                 FormattedID:id, 
                                 Name:name, 
