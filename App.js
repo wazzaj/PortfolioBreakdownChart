@@ -40,7 +40,7 @@ Ext.define('CustomApp', {
     _setStartDate: function() {
         var app = this; 
 
-        var d = Ext.Date.add(new Date(), Ext.Date.DAY, -7);
+        var d = Ext.Date.add(new Date(), Ext.Date.DAY, -28);
         app.startDate = Ext.Date.clearTime(d);
 
         var startDateField = Ext.create('Ext.Container', {
