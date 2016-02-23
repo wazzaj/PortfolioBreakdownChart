@@ -236,7 +236,7 @@ Ext.define('CustomApp', {
 
         if(!app.pieChart) {
             app.pieChart = new Ext.chart.Chart({
-                width: Ext.getBody().getViewSize().width - 100,
+                width: Ext.getBody().getViewSize().width,
                 height: Ext.getBody().getViewSize().height - 100,
                 animate: true,
                 store: app.pointsStore,
@@ -279,7 +279,7 @@ Ext.define('CustomApp', {
             });
 
             Ext.EventManager.onWindowResize(function () {
-                var width = Ext.getBody().getViewSize().width - 100;
+                var width = Ext.getBody().getViewSize().width;
                 var height = Ext.getBody().getViewSize().height - 100;
                 app.pieChart.setSize(width, height);
             });
