@@ -14,9 +14,45 @@ Ext.define('CustomApp', {
     ],
 
     launch: function() {
-        this._getPortfolioType();
-        this._setStartDate();
-        this._setEndDate();
+        var app = this;
+
+        if (app.getSetting("type") === "")  {
+            app._getPortfolioType();
+        } else {
+            app.piType = app.getSetting("type");
+        }
+
+        app._setStartDate();
+        app._setEndDate();
+
+        if (app.getSetting("type") != "")  {
+            app._loadData();
+        } 
+    },
+
+    config: {
+
+    defaultSettings : {
+        type : "",
+        gridDisplay : "YES"
+        }
+    },
+
+    getSettingsFields: function() {
+        var values = [
+            {
+                name: 'type',
+                xtype: 'rallytextfield',
+                label : "Portfolio Type e.g. Feature"
+            },
+            {
+                name: 'gridDisplay',
+                xtype: 'rallytextfield',
+                label : "Display Grid YES or NO"
+            }
+        ];
+
+        return values;
     },
 
     _getPortfolioType: function() {
@@ -89,7 +125,10 @@ Ext.define('CustomApp', {
     _loadData: function() {
         var app = this;
 
-        app.piType = app.down('#type-Filter').getRecord().get('Name');
+        if (app.getSetting("type") === "")  { 
+            app.piType = app.down('#type-Filter').getRecord().get('Name');
+        }
+
         app.startDate = app.down('#start-Date').getValue();
         app.endDate = app.down('#end-Date').getValue();
 
@@ -107,7 +146,10 @@ Ext.define('CustomApp', {
                 load: function(myStore, myData, success) {
                     app._processPortfolioItems();
                     app._drawPieChart();
-                    app._createPointsGrid();
+
+                    if (app.getSetting("gridDisplay") != "NO")  {
+                        app._createPointsGrid();
+                    }
                 },
                 scope: app    
             },
