@@ -25,7 +25,7 @@ Ext.define('CustomApp', {
         app._setStartDate();
         app._setEndDate();
 
-        if (app.getSetting("type") != "")  {
+        if (app.getSetting("type") !== "")  {
             app._loadData();
         } 
     },
