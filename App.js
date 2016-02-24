@@ -8,7 +8,7 @@ Ext.define('CustomApp', {
         itemId: 'filter-Box', 
         layout: {
             type: 'hbox',
-            align: 'stretch'
+            align: 'left'
             }
         }
     ],
@@ -211,7 +211,7 @@ Ext.define('CustomApp', {
                         deferred.resolve(0);
                     } else {
                         uStore.each(function(record) {
-                            var points = record.get('AcceptedLeafStoryPlanEstimateTotal'); 
+                            var points = record.get('AcceptedLeafStoryPlanEstimateTotal');
                             deferred.resolve(points);
                         }, app);
                     }
@@ -230,7 +230,6 @@ Ext.define('CustomApp', {
                 }
             ]
         });
-
         return deferred.promise;
     },
 

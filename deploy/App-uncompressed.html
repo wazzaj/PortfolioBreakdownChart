@@ -17,7 +17,7 @@
         itemId: 'filter-Box', 
         layout: {
             type: 'hbox',
-            align: 'stretch'
+            align: 'left'
             }
         }
     ],
@@ -220,7 +220,7 @@
                         deferred.resolve(0);
                     } else {
                         uStore.each(function(record) {
-                            var points = record.get('AcceptedLeafStoryPlanEstimateTotal'); 
+                            var points = record.get('AcceptedLeafStoryPlanEstimateTotal');
                             deferred.resolve(points);
                         }, app);
                     }
@@ -239,7 +239,6 @@
                 }
             ]
         });
-
         return deferred.promise;
     },
 
