@@ -34,7 +34,7 @@ Ext.define('CustomApp', {
 
     defaultSettings : {
         type : "",
-        gridDisplay : "YES"
+        gridDisplay : true
         }
     },
 
@@ -47,8 +47,8 @@ Ext.define('CustomApp', {
             },
             {
                 name: 'gridDisplay',
-                xtype: 'rallytextfield',
-                label : "Display Grid YES or NO"
+                xtype: 'rallycheckboxfield',
+                label : "Display Grid"
             }
         ];
 
@@ -147,7 +147,7 @@ Ext.define('CustomApp', {
                     app._processPortfolioItems();
                     app._drawPieChart();
 
-                    if (app.getSetting("gridDisplay") != "NO")  {
+                    if (app.getSetting("gridDisplay") === true)  {
                         app._createPointsGrid();
                     }
                 },
@@ -284,7 +284,7 @@ Ext.define('CustomApp', {
         if(!app.pieChart) {
             app.pieChart = new Ext.chart.Chart({
                 width: Ext.getBody().getViewSize().width,
-                height: Ext.getBody().getViewSize().height - 100,
+                height: Ext.getBody().getViewSize().height - 20,
                 animate: true,
                 store: app.pointsStore,
                 renderTo: Ext.getBody(),
@@ -327,7 +327,7 @@ Ext.define('CustomApp', {
 
             Ext.EventManager.onWindowResize(function () {
                 var width = Ext.getBody().getViewSize().width;
-                var height = Ext.getBody().getViewSize().height - 100;
+                var height = Ext.getBody().getViewSize().height - 20;
                 app.pieChart.setSize(width, height);
             });
 
