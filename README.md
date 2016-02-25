@@ -6,8 +6,8 @@ This Rally app will display a pie chart breaking down the number of completed po
 ##Screenshots
 =======
 ![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart.png)
+![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart%20-%20Show%20Grid.png)
 ![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart%20-%20App%20Settings.png)
-
 
 ##Documentation for SDK
 
