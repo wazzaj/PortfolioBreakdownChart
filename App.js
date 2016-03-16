@@ -8,7 +8,7 @@ Ext.define('CustomApp', {
         itemId: 'filter-Box', 
         layout: {
             type: 'hbox',
-            align: 'left'
+            align: 'stretch'
             }
         }
     ],
@@ -142,6 +142,7 @@ Ext.define('CustomApp', {
             model: 'Portfolio Item',
             autoLoad: true,
             filters: piFilter,
+            limit: Infinity, 
             listeners: {
                 load: function(myStore, myData, success) {
                     app._processPortfolioItems();
@@ -187,12 +188,12 @@ Ext.define('CustomApp', {
                                 Points:totalPoints});
                         },
                         failure: function(error) {
-//                            console.log("Error 2");
+                            console.log("Error 2");
                         }
                     });
                 },
                 failure: function(error) {
-//                    console.log("Error");
+                    console.log("Error");
                 }    
             });            
         },app);
