@@ -90,7 +90,6 @@ Ext.define('CustomApp', {
             operator: '=',
             value: app.piType
         });
-        console.log(piFilter.toString());
 
         app.itemStore = Ext.create('Rally.data.wsapi.Store', {
             model: 'Portfolio Item',
@@ -125,7 +124,6 @@ Ext.define('CustomApp', {
             app._getNextLevelItemCount(id).then({
                 scope: app,
                 success: function(itemCount) {
-                    console.log("Save item count : ", name, itemCount);
                     if (itemCount > 0) {
                         app.pointsStore.add({
                             FormattedID:id, 
@@ -243,7 +241,7 @@ Ext.define('CustomApp', {
                             app.pointsStore.each(function(rec) {
                                 total += rec.get('Count');
                             });
-                            this.setTitle(storeItem.get('Name') + ': ' + storeItem.get('Count'));
+                            this.setTitle(storeItem.get('Name') + ': ' + storeItem.get('Count') + ', ' + Math.round(storeItem.get('Count')/total*100) + '%');
                         }
                     },
                     highlight: {
