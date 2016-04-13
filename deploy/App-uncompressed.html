@@ -151,22 +151,23 @@
 
         console.log(id);
 
-        var piFilter = Ext.create('Rally.data.wsapi.Filter', {
+        var myFilter = Ext.create('Rally.data.wsapi.Filter', {
             property: 'Parent.FormattedID',
             operator: '=',
             value: id
-        },
-        {
+        });
+
+        var andTogetherFilter = myFilter.and(Ext.create('Rally.data.wsapi.Filter', {
             property: 'kanbanState',
             operator: '!=',
             value: app.excludeStates
-        });
-        console.log(piFilter.toString());
+        }));
+        console.log(andTogetherFilter.toString());
 
         app.itemStore = Ext.create('Rally.data.wsapi.Store', {
             model: 'Portfolio Item',
             autoLoad: true,
-            filters: piFilter,
+            filters: andTogetherFilter,
             limit: 1,
             listeners: {
                 load: function(myStore, myData, success) {
