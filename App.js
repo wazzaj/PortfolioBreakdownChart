@@ -31,6 +31,7 @@ Ext.define('CustomApp', {
 
     defaultSettings : {
         type : "",
+        excludeStates : "",
         gridDisplay : true
         }
     },
@@ -41,6 +42,10 @@ Ext.define('CustomApp', {
                 name: 'type',
                 xtype: 'rallytextfield',
                 label : "Portfolio Type e.g. Feature"
+            },
+            {   name: 'excludeStates',
+                xtype: 'rallytextfield',
+                label: "Specify states to be excluded from count e.g. Idea"
             },
             {
                 name: 'gridDisplay',
