@@ -31,7 +31,7 @@ Ext.define('CustomApp', {
 
     defaultSettings : {
         type : "",
-        excludeStates : "",
+        includeStates : "",
         gridDisplay : true
         }
     },
@@ -43,9 +43,9 @@ Ext.define('CustomApp', {
                 xtype: 'rallytextfield',
                 label : "Portfolio Type e.g. Feature"
             },
-            {   name: 'excludeStates',
+            {   name: 'includeStates',
                 xtype: 'rallytextfield',
-                label: "Specify states to be excluded from count e.g. Idea"
+                label: "Specify state to be included from count e.g. Deliver"
             },
             {
                 name: 'gridDisplay',
@@ -150,8 +150,8 @@ Ext.define('CustomApp', {
 
         var andTogetherFilter = myFilter.and(Ext.create('Rally.data.wsapi.Filter', {
             property: 'kanbanState',
-            operator: '!=',
-            value: app.excludeStates
+            operator: '=',
+            value: app.includeStates
         }));
         console.log(andTogetherFilter.toString());
 
