@@ -146,6 +146,11 @@ Ext.define('CustomApp', {
             property: 'Parent.FormattedID',
             operator: '=',
             value: id
+        },
+        {
+            property: 'kanbanState',
+            operator: '!=',
+            value: app.excludeStates
         });
         console.log(piFilter.toString());
 
@@ -156,8 +161,6 @@ Ext.define('CustomApp', {
             limit: 1,
             listeners: {
                 load: function(myStore, myData, success) {
-                    console.log(myStore);
-                    console.log("Count of Children : ", myStore.getCount());
                     deferred.resolve(myStore.getCount());
                 },
                 scope: app    
