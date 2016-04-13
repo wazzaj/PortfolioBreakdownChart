@@ -22,6 +22,8 @@ Ext.define('CustomApp', {
             app.piType = app.getSetting("type");
         }
 
+        app.includeStates = app.getSetting("includeStates");
+
         if (app.getSetting("type") !== "")  {
             app._loadData();
         } 
@@ -31,7 +33,7 @@ Ext.define('CustomApp', {
 
     defaultSettings : {
         type : "",
-        includeStates : "",
+        includeStates : "Deliver",
         gridDisplay : true
         }
     },
@@ -120,14 +122,16 @@ Ext.define('CustomApp', {
             var id = record.get('FormattedID');
             var name = record.get('Name');
 
-            app._getNextLevelItemCount(id,app).then({
+            app._getNextLevelItemCount(id).then({
                 scope: app,
                 success: function(itemCount) {
                     console.log("Save item count : ", name, itemCount);
-                    app.pointsStore.add({
-                        FormattedID:id, 
-                        Name:name, 
-                        Count:itemCount});
+                    if (itemCount > 0) {
+                        app.pointsStore.add({
+                            FormattedID:id, 
+                            Name:name, 
+                            Count:itemCount});
+                    }
                 },
                 failure: function(error) {
                     console.log("Error");
@@ -140,8 +144,6 @@ Ext.define('CustomApp', {
         var app = this;
         var deferred = Ext.create('Deft.Deferred');
 
-        console.log(id);
-
         var myFilter = Ext.create('Rally.data.wsapi.Filter', {
             property: 'Parent.FormattedID',
             operator: '=',
@@ -149,7 +151,7 @@ Ext.define('CustomApp', {
         });
 
         var andTogetherFilter = myFilter.and(Ext.create('Rally.data.wsapi.Filter', {
-            property: 'kanbanState',
+            property: 'kanbanState.Name',
             operator: '=',
             value: app.includeStates
         }));
@@ -222,18 +224,18 @@ Ext.define('CustomApp', {
                 store: app.pointsStore,
                 renderTo: Ext.getBody(),
                 shadow: true,
-//                legend: {
-//                    position: 'right'
-//                },
+                legend: {
+                    position: 'right'
+                },
                 insetPadding: 25,
                 theme: 'Base:gradients',
                 series: [{
                     type: 'pie',
                     field: 'Count',
-//                    showInLegend: true,
+                    showInLegend: true,
                     tips: {
                         trackMouse: true,
-                        width: 300,
+                        width: 500,
                         height: 29,
                         bodyStyle: {background: 'white'},
                         renderer: function(storeItem, item) {
