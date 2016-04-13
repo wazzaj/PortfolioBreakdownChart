@@ -22,9 +22,6 @@ Ext.define('CustomApp', {
             app.piType = app.getSetting("type");
         }
 
-        app._setStartDate();
-        app._setEndDate();
-
         if (app.getSetting("type") !== "")  {
             app._loadData();
         } 
@@ -73,54 +70,6 @@ Ext.define('CustomApp', {
         app.down('#filter-Box').add(piTypeField);
     },
 
-    _setStartDate: function() {
-        var app = this; 
-
-        var d = Ext.Date.add(new Date(), Ext.Date.DAY, -28);
-        app.startDate = Ext.Date.clearTime(d);
-
-        var startDateField = Ext.create('Ext.Container', {
-            items: [{
-                itemId: 'start-Date',
-                xtype: 'rallydatefield',
-                fieldLabel: 'Start Date',
-                labelAlign: 'right',
-                listeners: {
-                    select: app._loadData,
-                    scope: app
-                    },                   
-                maxValue: Ext.Date.add(new Date(), Ext.Date.DAY, -1),
-                value: app.startDate
-            }],
-            renderTo: Ext.getBody().dom
-        });
-
-        app.down('#filter-Box').add(startDateField);
-    },
-
-    _setEndDate: function() {
-        var app = this;
-
-        app.endDate = Ext.Date.add(new Date());
-
-        var endDateField = Ext.create('Ext.Container', {
-            items: [{
-                itemId: 'end-Date',
-                xtype: 'rallydatefield',
-                fieldLabel: 'End Date',                
-                labelAlign: 'right',
-                listeners: {
-                    select: app._loadData,
-                    scope: app                    
-                    },    
-                maxValue: Ext.Date.add(new Date()),
-                value: app.endDate
-                }],
-            renderTo: Ext.getBody().dom
-        });
-
-        app.down('#filter-Box').add(endDateField);
-    },
 
     _loadData: function() {
         var app = this;
@@ -129,20 +78,18 @@ Ext.define('CustomApp', {
             app.piType = app.down('#type-Filter').getRecord().get('Name');
         }
 
-        app.startDate = app.down('#start-Date').getValue();
-        app.endDate = app.down('#end-Date').getValue();
-
         var piFilter = Ext.create('Rally.data.wsapi.Filter', {
             property: 'PortfolioItemType.Name',
             operator: '=',
             value: app.piType
         });
+        console.log(piFilter.toString());
 
         app.itemStore = Ext.create('Rally.data.wsapi.Store', {
             model: 'Portfolio Item',
             autoLoad: true,
             filters: piFilter,
-            limit: Infinity, 
+            limit: Infinity,
             listeners: {
                 load: function(myStore, myData, success) {
                     app._processPortfolioItems();
@@ -168,29 +115,14 @@ Ext.define('CustomApp', {
             var id = record.get('FormattedID');
             var name = record.get('Name');
 
-            app._getPointsDifference(item,app.startDate).then({
+            app._getNextLevelItemCount(id,app).then({
                 scope: app,
-                success: function(startPoints) {
-                    app._getPointsDifference(item,app.endDate).then({
-                        scope: app,
-                        success: function(endPoints) {
-                            var totalPoints = endPoints - startPoints;
-
-                            if (totalPoints < 0) {
-                                totalPoints = 0;
-                            }
-
-                            app.pointsStore.add({
-                                FormattedID:id, 
-                                Name:name, 
-                                Start: startPoints, 
-                                End: endPoints, 
-                                Points:totalPoints});
-                        },
-                        failure: function(error) {
-                            console.log("Error 2");
-                        }
-                    });
+                success: function(itemCount) {
+                    console.log("Save item count : ", name, itemCount);
+                    app.pointsStore.add({
+                        FormattedID:id, 
+                        Name:name, 
+                        Count:itemCount});
                 },
                 failure: function(error) {
                     console.log("Error");
@@ -199,37 +131,33 @@ Ext.define('CustomApp', {
         },app);
     },
 
-    _getPointsDifference: function(objid, uDate) {
+    _getNextLevelItemCount: function(id) {
         var app = this;
         var deferred = Ext.create('Deft.Deferred');
 
-        var uStore = Ext.create('Rally.data.lookback.SnapshotStore', {
+        console.log(id);
+
+        var piFilter = Ext.create('Rally.data.wsapi.Filter', {
+            property: 'Parent.FormattedID',
+            operator: '=',
+            value: id
+        });
+        console.log(piFilter.toString());
+
+        app.itemStore = Ext.create('Rally.data.wsapi.Store', {
+            model: 'Portfolio Item',
             autoLoad: true,
+            filters: piFilter,
+            limit: 1,
             listeners: {
-                scope: app,
-                load: function(uStore, uData, success) {
-                    if (uStore.getCount() === 0) {
-                        deferred.resolve(0);
-                    } else {
-                        uStore.each(function(record) {
-                            var points = record.get('AcceptedLeafStoryPlanEstimateTotal');
-                            deferred.resolve(points);
-                        }, app);
-                    }
-                }
-            },
-            fetch: ['Name', 'AcceptedLeafStoryPlanEstimateTotal'],
-            filters: [
-                {
-                    property: 'ObjectID',
-                    operator: '=',
-                    value: objid
+                load: function(myStore, myData, success) {
+                    console.log(myStore);
+                    console.log("Count of Children : ", myStore.getCount());
+                    deferred.resolve(myStore.getCount());
                 },
-                {
-                    property: '__At',
-                    value: uDate
-                }
-            ]
+                scope: app    
+            },
+            fetch: ['FormattedID','ObjectID', 'Name']
         });
         return deferred.promise;
     },
@@ -244,9 +172,7 @@ Ext.define('CustomApp', {
                 fields: [
                     'FormattedID',
                     'Name',
-                    'Start',
-                    'End',
-                    'Points'
+                    'Count'
                 ]
             });
         }    
@@ -262,9 +188,7 @@ Ext.define('CustomApp', {
                 columns: [
                     {text: 'ID',        dataIndex: 'FormattedID'},       
                     {text: 'Name',      dataIndex: 'Name',   flex:1},
-                    {text: 'Start',     dataIndex: 'Start'},
-                    {text: 'End',       dataIndex: 'End'},
-                    {text: 'Points',    dataIndex: 'Points'}
+                    {text: 'Count',    dataIndex: 'Count'}
                 ],
                 renderTo: Ext.getBody()
                 });
@@ -296,7 +220,7 @@ Ext.define('CustomApp', {
                 theme: 'Base:gradients',
                 series: [{
                     type: 'pie',
-                    field: 'Points',
+                    field: 'Count',
 //                    showInLegend: true,
                     tips: {
                         trackMouse: true,
@@ -306,9 +230,9 @@ Ext.define('CustomApp', {
                         renderer: function(storeItem, item) {
                             var total = 0;
                             app.pointsStore.each(function(rec) {
-                                total += rec.get('Points');
+                                total += rec.get('Count');
                             });
-                            this.setTitle(storeItem.get('Name') + ': ' + Math.round(storeItem.get('Points') / total * 100) + '%');
+                            this.setTitle(storeItem.get('Name') + ': ' + storeItem.get('Count'));
                         }
                     },
                     highlight: {
