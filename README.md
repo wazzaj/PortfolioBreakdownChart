@@ -1,13 +1,10 @@
-PortfolioPieChart
+PortfolioBreakdown
 =========================
 ##Overview
-This Rally app will display a pie chart breaking down the number of completed points of all Portfolio Items at a specified tier (e.g. Initiative, Feature) over a specified time range.
+This Rally app will display a pie chart showing a breakdown of the count of children for each portfolio item. For example, it will show the count of child Features for an Initiative. This is handy in giving a high level view of the focus on each portfolio item with comparison to each other. 
 
 ##Screenshots
 =======
-![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart.png)
-![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart%20-%20Show%20Grid.png)
-![image](https://github.com/wazzaj/PortfolioPieChart/blob/master/doc/screenshots/Portfolio%20Pie%20Chart%20-%20App%20Settings.png)
 
 ##Documentation for SDK
 
